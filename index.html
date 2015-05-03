@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html ng-app="firepollapp">
+
+<head>
+    <title>Etiya Polling</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <link href="css/style.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+
+    <script src="js/lib/bootstrap/jquery.js"></script>
+    <script src="js/lib/angular/angular.js"></script>
+
+    <!-- 3rd party cdns -->
+    <script src="https://code.angularjs.org/1.4.0-beta.4/angular-route.js"></script>
+    <script src="https://cdn.firebase.com/js/client/1.0.6/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/0.7.0/angularfire.min.js"></script>
+
+
+    <script src="js/app.js"></script>
+    <script src="js/controller.js"></script>
+
+</head>
+
+<body>
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Etiya Polling Application</a>
+            </div>
+
+            <ul class="nav navbar-nav ">
+                <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+                <li><a href="#list"><i class="fa fa-shield"></i> Poll List</a></li>
+                <li><a href="#create"><i class="fa fa-plus"></i> Create poll</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="container" ng-controller="mainCtrl">
+    <div class="modal-content" ng-controller="mainCtrl">
+        <div class="createPoll">
+            <h2 class="text-center">Create a poll</h2>
+            <form>
+                <h4>Question</h4>
+                <textarea rows="2" cols="50" class="form-control" ng-model="pollForm.name" placeholder="Question!" class="col-md-10" maxlength="255" required></textarea>
+
+                <h4>Options</h4>
+
+                <label>Options can by created by pressing button</label>
+                <div ng-repeat="option in pollForm.options track by $index">
+                    Option {{ $index+1 }}
+                    <textarea rows="1" cols="50" class="form-control" ng-model="pollForm.options[$index][0]" placeholder="Option!" class="col-md-8" maxlength="255" required></textarea>
+                    <button class="btn btn-default" ng-click="removeOption($index)"> - </button>
+                </div>
+                <button class="btn btn-primary" ng-click="addPollOption()"><i class="fa fa-plus"></i> Add answer</button>
+                <br>
+                <br>
+                <button class="btn btn-primary" ng-click="pollCreate()"> <i class="fa fa-check-circle"></i> Create Poll</button>
+            </form>
+            <br>
+        </div>
+
+        <div class="selectPoll">
+            <h2 class="text-center">Poll List</h2>
+            <label>You can select a poll title and it appers below.</label>
+            <div ng-show="load">
+                ... Loading
+            </div>
+            <div ng-show="!load">
+                <button ng-repeat="(key, value) in polls track by $index" ng-click="selectPoll(key)" class="pollSelectBtn btn-primary">
+                    {{ value.name }}
+                </button>
+                <br>
+            </div>
+            <br>
+            <br>
+        </div>
+
+        <div class="selectPoll">
+            <div ng-if="selectedPoll">
+                <br>
+                <form>
+                    <div>
+                        <h3>Options</h3>
+                            <span ng-repeat="data in selectedPollOptions">
+                                        <br><label>Option {{$index+1}} </label><button class="btn btn-primary" ng-click="vote($index)"> {{ data[0] }}</button>
+                            </span>
+
+                    </div>
+                    <div>
+                        <label> Add New Option:</label>
+                        <input ng-minlength="1" type="text" ng-model="vote.optionOther" class="w200">
+                        <button class="btn btn-primary" ng-click="addOther()"><i class="fa fa-plus"></i> Add</button>
+                        <br>
+                        <label> Save Option:</label>
+                        <button class="btn btn-primary" ng-click="addOther()"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
